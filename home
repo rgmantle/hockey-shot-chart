@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Shot Logger
+        </title>
+        <style>
+            * {
+              box-sizing: border-box;
+            }
+            
+            /* Create four equal columns that floats next to each other */
+            .column {
+              float: left;
+              width: 125px;
+              padding: 10px;
+            }
+            
+            /* Clear floats after the columns */
+            .row:after {
+              content: "";
+              display: table;
+              clear: both;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1 style="color: blue">
+            ShotChartLog
+        </h1>
+
+        <b>
+            This page will take shot data and import it into the database.
+        </b>
+
+        <p>
+            Click anywhere on the canvas element to get the mouse pointer location.
+        </p>
+        <!--The image is here, but hidden so it doesn't show up twice when used as the canvas-->
+        <img id="rink" width="500" height="600" src="../images/rink.jpg" hidden alt="Hockey Rink Base">
+
+        <p>
+            Check the console for output
+        </p>
+        <h1>Shot Info</h1>
+        <form action="../db/insertShots.php" method="post">
+            <p>
+                <label for="season">Season: </label>
+                <input type="text" name="season_id" id="season" value="22">
+                <label for="game">Game: </label>
+                <input type="text" name="game_no" id="game">
+            </p>
+            <p>
+                <label for="shooter">Shooter: </label>
+                <input type="text" name="user_id" id="userID">
+                <label for="primary">Primary: </label>
+                <input type="text" name="assist1" id="primary">
+                <label for="secondary">Secondary: </label>
+                <input type="text" name="assist2" id="secondary">
+            </p>
+        <div class="row">
+            <div class="column">
+                <p> Shot Type<br>
+                    <input type="radio" id="backHand" name="shot_type" value="Backhand">
+                        <label for="backHand">Backhand</label><br>
+                    <input type="radio" id="deflection" name="shot_type" value="Deflection">
+                        <label for="deflection">Deflection</label><br>
+                    <input type="radio" id="oneTime" name="shot_type" value="OneTime">
+                        <label for="oneTime">OneTime</label><br>
+                    <input type="radio" id="rebound" name="shot_type" value="Rebound">
+                        <label for="rebound">Rebound</label><br>
+                    <input type="radio" id="slap" name="shot_type" value="Slap">
+                        <label for="slap">Slap</label><br>
+                    <input type="radio" id="wristShot" name="shot_type" value="Wrist">
+                        <label for="wristShot">Wrist</label><br>
+            </div>
+            <div class="column">
+                <p>Shot Result<br>
+                        <input type="radio" id="goal" name="result" value="G">
+                            <label for="goal">G</label><br>
+                        <input type="radio" id="shotOnGoal" name="result" value="S">
+                            <label for="shotOnGoal">S</label><br>
+                        <input type="radio" id="miss" name="result" value="A">
+                            <label for="miss">A</label><br>            
+                        <input type="radio" id="block" name="result" value="B">
+                            <label for="block">B</label><br>        
+            </div>
+            <div class="column">
+                <p>Game Status<br>
+                    <input type="radio" id="evenStrength" name="gameStatus" value="EV">
+                        <label for="evenStrength">EV</label><br>
+                    <input type="radio" id="powerPlay" name="gameStatus" value="PP">
+                        <label for="powerPlay">PP</label><br>
+                    <input type="radio" id="shortHanded" name="gameStatus" value="SH">
+                        <label for="shortHanded">SH</label><br>     
+            </div>
+            <div class="column">
+                <p>Period<br>
+                    <input type="radio" id="first" name="period" value="1">
+                        <label for="first">1</label><br>
+                    <input type="radio" id="second" name="period" value="2">
+                        <label for="second">2</label><br>
+                    <input type="radio" id="third" name="period" value="3">
+                        <label for="third">3</label><br>            
+            </div>
+        </div>
+            <p>
+                <label for="time">Time: </label>
+                <input type="text" name="time" id="time" value="00:00:00">
+                <label for="x_axis">X-Axis: </label>
+                <input type="text" name="x_axis" id="x_axis">
+                <label for="y_axis">Y-Axis: </label>
+                <input type="text" name="y_axis" id="y_axis">
+            </p>
+            <input type="submit" value="Submit">
+        </form>
+
+
+        <canvas id="myCanvas" width="500" height="580" style="background-color:aliceblue">
+        </canvas>
+
+        <script type="text/javascript">
+
+            window.onload = function() {
+                var c = document.getElementById("myCanvas");
+                var ctx = c.getContext("2d");
+                var img = document.getElementById("rink");
+                ctx.drawImage(img, 2,2)
+            }
+
+            function getMousePosition(canvas, event) {
+                let rect = canvas.getBoundingClientRect();
+                let x = event.clientX - rect.left;
+                let y = event.clientY - rect.top;
+                document.getElementById("x_axis").setAttribute("value", (-x+250));
+                document.getElementById("y_axis").setAttribute("value", Math.round(+y));
+                console.log("Coordinate x: " + (-x+250), 
+                            "Coordinate y: " + Math.round(+y));
+            }
+
+            let canvasElem = document.querySelector("canvas");
+
+            canvasElem.addEventListener("click", function(e)
+                {
+                    getMousePosition(canvasElem, e);
+
+                });
+
+
+        </script>
+    </body>
+</html>
